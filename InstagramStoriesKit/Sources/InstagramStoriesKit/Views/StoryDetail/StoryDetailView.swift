@@ -6,10 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 public struct StoryDetailView: View {
   @StateObject private var viewModel: StoryDetailViewModel
-  @Environment(\.dismiss) private var dismiss
+  @Environment(\.modelContext) private var modelContext
+  
+  @Query private var viewedStories: [ViewedStory]
+  @Query private var likedStories: [LikedStory]
+  
+  @State private var currentStoryIsLiked: Bool = false
   
   public init(
     users: [Models.App.User],
@@ -45,7 +51,10 @@ public struct StoryDetailView: View {
           Spacer()
           
           StoryBottomInteraction(
-            onLike: viewModel.likeStory
+            onLike: {
+              handleLikeStory()
+            },
+            isLiked: currentStoryIsLiked
           )
         }
         .padding(.top, geometry.safeAreaInsets.top)
@@ -54,7 +63,7 @@ public struct StoryDetailView: View {
         VStack {
           Rectangle()
             .fill(Color.black)
-            .frame(height: geometry.safeAreaInsets.top + 10) 
+            .frame(height: geometry.safeAreaInsets.top + 10)
           Spacer()
         }
         
@@ -68,6 +77,21 @@ public struct StoryDetailView: View {
       .ignoresSafeArea()
     }
     .preferredColorScheme(.dark)
+    .onAppear {
+      markStoryAsViewed()
+      updateLikeStatus()
+    }
+    .onChange(of: viewModel.currentStoryIndex) { _, _ in
+      markStoryAsViewed()
+      updateLikeStatus()
+    }
+    .onChange(of: viewModel.currentUserIndex) { _, _ in
+      markStoryAsViewed()
+      updateLikeStatus()
+    }
+    .onChange(of: likedStories) { _, _ in
+      updateLikeStatus()
+    }
   }
   
   /// The story background image with gestures recognition for stories interaction.
@@ -112,36 +136,92 @@ public struct StoryDetailView: View {
       perform: {}
     )
   }
+  
+  private func markStoryAsViewed() {
+    let currentStory = viewModel.currentStory
+    let userId = viewModel.user.userId
+    
+    let alreadyViewed = viewedStories.contains { story in
+      story.userId == userId && story.storyId == currentStory.id
+    }
+    
+    if !alreadyViewed {
+      let viewedStory = ViewedStory(userId: userId, storyId: currentStory.id)
+      modelContext.insert(viewedStory)
+      
+      do {
+        try modelContext.save()
+      } catch {
+        print("Error during data saving: \(error)")
+      }
+    }
+  }
+  
+  private func isStoryLiked() -> Bool {
+    let currentStory = viewModel.currentStory
+    let userId = viewModel.user.userId
+    
+    let isLiked = likedStories.contains { story in
+      story.userId == userId && story.storyId == currentStory.id
+    }
+    
+    return isLiked
+  }
+  
+  private func updateLikeStatus() {
+    currentStoryIsLiked = isStoryLiked()
+  }
+  
+  private func handleLikeStory() {
+    let currentStory = viewModel.currentStory
+    let userId = viewModel.user.userId
+    
+    if let existingLike = likedStories.first(where: { story in
+      story.userId == userId && story.storyId == currentStory.id
+    }) {
+      modelContext.delete(existingLike)
+      currentStoryIsLiked = false
+    } else {
+      let likedStory = LikedStory(userId: userId, storyId: currentStory.id)
+      modelContext.insert(likedStory)
+      currentStoryIsLiked = true
+    }
+    
+    do {
+      try modelContext.save()
+    } catch {
+      print("❌ Error during saving the liked story: \(error)")
+      currentStoryIsLiked = !currentStoryIsLiked
+    }
+  }
 }
 
 // MARK: - SwiftUI Previews
 struct StoryDetailView_Previews: PreviewProvider {
   static var previews: some View {
     Group {
-      // Preview con nuovo initializer
       StoryDetailView(
         users: [
           Models.App.User(
             userId: 1,
-            name: "chiarasoracco",
+            name: "Pippo",
             profilePictureUrl: URL(string: "https://picsum.photos/200/200?random=1")
           ),
           Models.App.User(
             userId: 2,
-            name: "johnsmith",
+            name: "Pluto",
             profilePictureUrl: URL(string: "https://picsum.photos/200/200?random=2")
           ),
           Models.App.User(
             userId: 3,
-            name: "mariabrown",
+            name: "Paperino",
             profilePictureUrl: URL(string: "https://picsum.photos/200/200?random=3")
           )
         ],
         initialUserIndex: 0,
         onDismiss: {}
       )
-      .previewDisplayName("Story Detail - Multi Users")
+      .previewDisplayName("Story Detail")
     }
   }
 }
-

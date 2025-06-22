@@ -38,6 +38,7 @@ public struct StoriesListView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
       }
+      .frame(height: 120)
     }
     .fullScreenCover(isPresented: $showStoryDetail) {
       StoryDetailView(

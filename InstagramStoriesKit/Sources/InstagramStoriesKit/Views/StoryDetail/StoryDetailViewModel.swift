@@ -42,7 +42,7 @@ public final class StoryDetailViewModel: ObservableObject {
     if let cachedStories = storiesCache[String(userId)] {
       return cachedStories
     } else {
-      let newStories = StoryDetailViewModel.generateMockStories()
+      let newStories = StoryDetailViewModel.generateMockStories(for: userId)
       storiesCache[String(userId)] = newStories
       return newStories
     }
@@ -171,24 +171,24 @@ public final class StoryDetailViewModel: ObservableObject {
   func handleLongPressEnd() {
     resumeStory()
   }
-  
-  func likeStory() {
-    #warning("Add logic")
-  }
 }
 
 // MARK: - Mock Data
+
 private extension StoryDetailViewModel {
-  static func generateMockStories() -> [StoryModel] {
-    // Genera un numero casuale di storie tra 1 e 5
-    let numberOfStories = Int.random(in: 1...5)
+  static func generateMockStories(for userId: Int) -> [StoryModel] {
+    let numberOfStories = (userId % 4) + 2
     
     let timeAgoOptions = ["1 min", "5 min", "15 min", "1 h", "2 h", "3 h", "4 h", "5 h", "12 h", "22 h"]
     
     return (0..<numberOfStories).map { index in
-      StoryModel(
-        imageUrl: "https://picsum.photos/390/844?random=\(Int.random(in: 1...1000))",
-        timeAgo: timeAgoOptions.randomElement() ?? "1 h"
+      let storyId = "story_\(userId)_\(index)"
+      let imageId = (userId * 100) + index + 1
+      
+      return StoryModel(
+        imageUrl: "https://picsum.photos/390/844?random=\(imageId)",
+        timeAgo: timeAgoOptions[index % timeAgoOptions.count],
+        id: storyId
       )
     }
   }

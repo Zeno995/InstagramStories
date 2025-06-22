@@ -6,8 +6,7 @@ import PackageDescription
 let package = Package(
   name: "InstagramStoriesKit",
   platforms: [
-    .iOS(.v16),
-    .macOS(.v13)
+    .iOS(.v17)
   ],
   products: [
     .library(

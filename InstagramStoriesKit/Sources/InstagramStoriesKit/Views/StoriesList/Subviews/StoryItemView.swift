@@ -6,11 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 /// The `View` representing an user story.
 struct StoryItemView: View {
   let user: Models.App.User
   let onTap: () -> Void
+  
+  @Environment(\.modelContext) private var modelContext
+  @Query private var allViewedStories: [ViewedStory]
+  
+  private var hasUnviewedStories: Bool {
+    let userViewedStories = allViewedStories.filter { $0.userId == user.userId }
+    return userViewedStories.isEmpty
+  }
   
   var body: some View {
     Button(action: onTap) {
@@ -18,11 +27,17 @@ struct StoryItemView: View {
         ZStack {
           Circle()
             .stroke(
-              LinearGradient(
-                colors: [.purple, .pink, .orange, .yellow],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-              ),
+              hasUnviewedStories ? 
+                LinearGradient(
+                  colors: [.purple, .pink, .orange, .yellow],
+                  startPoint: .topLeading,
+                  endPoint: .bottomTrailing
+                ) :
+                LinearGradient(
+                  colors: [.gray, .gray],
+                  startPoint: .topLeading,
+                  endPoint: .bottomTrailing
+                ),
               lineWidth: 3
             )
             .frame(width: 80, height: 80)

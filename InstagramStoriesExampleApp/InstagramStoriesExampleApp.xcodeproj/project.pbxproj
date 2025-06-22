@@ -14,7 +14,7 @@
 
 /* Begin PBXFileReference section */
 		4B56D31847BE7A93CB9A99E4 /* InstagramStoriesExampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramStoriesExampleApp.swift; sourceTree = "<group>"; };
-		7400493FCD1D0360857FEBD6 /* InstagramStoriesExampleApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = InstagramStoriesExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7400493FCD1D0360857FEBD6 /* InstagramStoriesExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstagramStoriesExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		85D9E694BA5522D4B660728A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		9AD74457F1C2745AC1E2C022 /* InstagramStoriesKit */ = {isa = PBXFileReference; lastKnownFileType = folder; name = InstagramStoriesKit; path = ../InstagramStoriesKit; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -263,6 +263,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -281,6 +282,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

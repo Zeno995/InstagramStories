@@ -8,12 +8,13 @@
 import Foundation
 
 struct StoryModel: Identifiable {
-  let id = UUID()
+  let id: String
   let imageUrl: String
   let timeAgo: String
   
-  init(imageUrl: String, timeAgo: String) {
+  init(imageUrl: String, timeAgo: String, id: String? = nil) {
     self.imageUrl = imageUrl
     self.timeAgo = timeAgo
+    self.id = id ?? UUID().uuidString
   }
 }

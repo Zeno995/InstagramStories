@@ -17,7 +17,7 @@ struct ContentView: View {
             localDataManager: LocalDataManager()
           )
         )
-          .padding(.top, 32)
+        .padding(.top, 32)
         
         Spacer()
       }

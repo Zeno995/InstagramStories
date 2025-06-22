@@ -9,13 +9,16 @@ import SwiftUI
 
 public struct StoryBottomInteraction: View {
   let onLike: () -> Void
+  let isLiked: Bool
   @State private var messageText: String = ""
   @FocusState private var isTextFieldFocused: Bool
   
   public init(
-    onLike: @escaping () -> Void
+    onLike: @escaping () -> Void,
+    isLiked: Bool = false
   ) {
     self.onLike = onLike
+    self.isLiked = isLiked
   }
   
   public var body: some View {
@@ -36,9 +39,9 @@ public struct StoryBottomInteraction: View {
         )
       
       Button(action: onLike) {
-        Image(systemName: "heart")
+        Image(systemName: isLiked ? "heart.fill" : "heart")
           .font(.system(size: 24, weight: .medium))
-          .foregroundColor(.white)
+          .foregroundColor(isLiked ? .red : .white)
           .frame(width: 44, height: 44)
       }
       
