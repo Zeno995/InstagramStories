@@ -10,6 +10,8 @@ import SwiftUI
 /// A `View` representing the users stories.
 public struct StoriesListView: View {
   @StateObject private var viewModel: StoriesListViewModel
+  @State private var selectedUserIndex: Int = 0
+  @State private var showStoryDetail = false
   
   public init(viewModel: StoriesListViewModel) {
     self._viewModel = StateObject(wrappedValue: viewModel)
@@ -21,9 +23,10 @@ public struct StoriesListView: View {
         LazyHStack(spacing: 16) {
           UserStoryView()
           
-          ForEach(viewModel.users) { user in
+          ForEach(Array(viewModel.users.enumerated()), id: \.offset) { index, user in
             StoryItemView(user: user) {
-#warning("Tap user story")
+              selectedUserIndex = index
+              showStoryDetail = true
             }
             .onAppear {
               if viewModel.shouldLoadMore(for: user) {
@@ -35,6 +38,16 @@ public struct StoriesListView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
       }
+    }
+    .fullScreenCover(isPresented: $showStoryDetail) {
+      StoryDetailView(
+        users: viewModel.users,
+        initialUserIndex: selectedUserIndex,
+        onDismiss: {
+          showStoryDetail = false
+        }
+      )
+      .transition(.opacity.combined(with: .scale))
     }
   }
 }
