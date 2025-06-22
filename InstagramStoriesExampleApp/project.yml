@@ -1,0 +1,35 @@
+name: InstagramStoriesExampleApp
+
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "16.0"
+
+targets:
+  InstagramStoriesExampleApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    dependencies:
+      - package: InstagramStoriesKit
+        product: InstagramStoriesKit
+    settings:
+      INFOPLIST_FILE: Info.plist
+      PRODUCT_BUNDLE_IDENTIFIER: com.example.InstagramStoriesExampleApp
+      DEVELOPMENT_TEAM: ""
+      CODE_SIGN_STYLE: Automatic
+
+packages:
+  InstagramStoriesKit:
+    path: ../InstagramStoriesKit
+
+schemes:
+  InstagramStoriesExampleApp:
+    build:
+      targets:
+        InstagramStoriesExampleApp: all
+    run:
+      config: Debug
+    archive:
+      config: Release 
